@@ -1,15 +1,10 @@
-// To-do:
-// WHEN I choose to add an employee, THEN I am prompted to enter the employee’s first name, last name, role, and manager, and that employee is added to the database
-// WHEN I choose to update an employee role, THEN I am prompted to select an employee to update and their new role and this information is updated in the database
-
-// Bringing in required modules, packages
+// Bringing in required module, plus Figlet to imitate the Challenge 12 demo, just for fun
+// Also database connectivity and DB functions
 const inquirer = require("Inquirer");
-//const cTable = require("console.table");
-// Using Figlet to imitate the Challenge 12 demo as best as possible, just for fun
 const figlet = require("figlet");
-// Database connectivity to local MySQL service
-const {db, viewAllDepartments, viewAllRoles, viewAllEmployees, addDepartment, addRole} = require("./db");
+const {db, viewAllDepartments, viewAllRoles, viewAllEmployees, addDepartment, addRole, addEmployee, updateEmployee} = require("./db");
 
+// Set up main menu choices so I can display the strings and switch on which prompt was chosen
 const menuPrompt = {
     viewAllDepartments: "View All Departments",
     viewAllRoles: "View All Roles",
@@ -21,6 +16,7 @@ const menuPrompt = {
     quit: "Quit"
 }
 
+// Get a selection from the user
 const mainMenu = () => {
     inquirer.prompt({
         type: "list",
@@ -38,6 +34,8 @@ const mainMenu = () => {
         ]
     }).then((response) => {
         switch(response.choice) {
+            // The cases below run their function, waiting on a promise return
+            // then invoke mainMenu() again to continue program exection until the user wants to quit
             case menuPrompt.viewAllDepartments:
                 console.log("\n");
                 viewAllDepartments().then(() => {
@@ -62,18 +60,19 @@ const mainMenu = () => {
                     mainMenu();
                 });
                 break;
+            // The cases below here run functions with nested callbacks
+            // Pass in mainMenu() so we can invoke it again within the called funcs
             case menuPrompt.addRole:
                 console.log("\n");
-                addRole().then(() => {
-                    mainMenu();
-                });
+                addRole(mainMenu);
                 break;
             case menuPrompt.addEmployee:
-                console.log("Add employee func");
+                addEmployee(mainMenu);
                 break;
             case menuPrompt.updateEmployeeRole:
-                console.log("Update employee role func");
+                updateEmployee(mainMenu);
                 break;
+            // This case will end program execution
             case menuPrompt.quit:
                 db.end();
                 break;
