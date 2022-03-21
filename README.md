@@ -24,4 +24,4 @@ Above is a link to a video demonstrating:
 - A functional menu with the options outlined in the acceptance criteria
 
 ### For Further Details:
-Please check the repository's commit history and associated comments to see more information about this team webpage generator.
+Please check the repository's commit history and associated comments to see more information about this Employee Tracker.
